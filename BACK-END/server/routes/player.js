@@ -30,7 +30,7 @@ return token.save()
 })
 .then(()=> {
 var transporter = nodemailer.createTransport({ service: 'gmail', auth: {user: 'hellohellio782@gmail.com', pass:"happytogether147"} });
-var mailOptions = { from: 'hellohellio782@gmail.com', to: player.email, subject: 'Account Verification Token', text: 'Hello,\n\n' + 'Please verify your account by copping this token ' + token.token + '.\n' };
+var mailOptions = { from: 'hellohellio782@gmail.com', to: player.email, subject: 'Account Verification Token', text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + token.token + '.\n'  };
 // Send the email
  return transporter.sendMail(mailOptions)
 }) 
@@ -86,10 +86,16 @@ res.send({ token: generateToken(Player), player: Player.toJSON() });
 /////////////////////////////////////////////////////////////////CONFIRMATION 
 router.get('/confirmation', function(req,res){
   // Find a matching token
-    Token.findOne({ token: req.body.token }, function (err, token) {
-      if (!token) return res.status(400).send({ type: 'not-verified', msg: 'We were unable to find a valid token. Your token may have expired.' });
+  
+    Token.findOne({ token: req.body.token }
+      .then((token)=>{
+        if (!token) return res.status(400).send({ type: 'not-verified', msg: 'We were unable to find a valid token. Your token may have expired.' });
+      }) 
+      
   // If we found a token, find a matching player
-      player.findOne({ _id: token._playerId, email: req.body.email }, function (err, player) {
+     .then(()=>{
+       
+     }) player.findOne({ _id: token._playerId, email: req.body.email }, function (err, player) {
           if (!player) return res.status(400).send({ msg: 'We were unable to find a user for this token.' });
           if (user.isVerified) return res.status(400).send({ type: 'already-verified', msg: 'This user has already been verified.' });
    // Verify and save the user
@@ -100,7 +106,7 @@ router.get('/confirmation', function(req,res){
           });
       });
   });
-  });
+  };
 
   ///////////////////////////////////////////////////////RESEND
   router.post('/resend',function(req,res){
