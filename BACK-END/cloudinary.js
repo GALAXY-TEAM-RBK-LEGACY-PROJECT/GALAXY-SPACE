@@ -1,4 +1,4 @@
-const cloudinary = require("cloudinary")
+/*const cloudinary = require("cloudinary")
 
 
 // config to acces my cloudinary account
@@ -17,4 +17,4 @@ exports.uploads = (file) => {
             resolve({url: result.url, id : result.public_id})
         }, {resource_type: 'auto'})
     })
-}
+}*/

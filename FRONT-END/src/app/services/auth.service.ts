@@ -55,7 +55,10 @@ export class AuthService {
     }>
     ('http://localhost:4000/players/login',player) 
   }
-
+getimage(Image: FormData){
+  return this.http.post
+  ('http://localhost:4000/players/upload',Image)   
+} //get  res data base image 
   getProfile() {
     return this.http.get 
     <{
@@ -76,4 +79,5 @@ export class AuthService {
     this.logged = true;
     localStorage.clear();
   }
+
 }

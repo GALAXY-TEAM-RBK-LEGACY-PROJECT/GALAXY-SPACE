@@ -12,12 +12,12 @@ const fs = require("fs")
 
 require("dotenv").config();
 const app = express();
-
+app.use(express.static(path.join(__dirname, 'uploads')));
 // CONFIRMATION EMAIL
 var crypto = require('crypto');
 var nodemailer = require('nodemailer');
 //UPLODING IMAGE
-const multerConfig = require('../multer')
+/*const multerConfig = require('../multer')*/
 
 // ADDING MONGOOSE
 mongoose.connect(process.env.MONGODB_CONNECTION_STRING, {
@@ -31,7 +31,7 @@ mongoose.connect(process.env.MONGODB_CONNECTION_STRING, {
 );
 
 //UPLODING IMAGE
-const imageModule = require ('../database/image')
+//const imageModule = require ('../database/image')
 
 //REGISTER & LOGIN
 const playersRouter = require('./routes/player');
@@ -63,7 +63,7 @@ app.get("/",(req,res )=>{
 //select the path for the static folder containing the images
 app.use ('/images',express.static('images'))
 // upload image
-app.post('/myPics',multerConfig, async (req,res) => {
+/*app.post('/myPics',multerConfig, async (req,res) => {
     // change the local storage to cloud storage
     const result = await cloud.uploads(req.files[0].path)
     const imageDetails = {
@@ -94,7 +94,7 @@ app.get('/myPics', async(req,res) => {
     const images = await imageModule.find()
     res.json(images)
 })
-
+*/
 // START SERVER 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`the server is running on port : ${PORT}`));

@@ -1,13 +1,18 @@
 
 const router = require("express").Router();
 var jwt = require('jsonwebtoken');
+var ImageUpload=require('../../database/image')
 var Player = require('../../database/playerModel');
 var Token= require('../../database/token');
 var crypto = require('crypto');
 var nodemailer = require('nodemailer');
 var passport =require ('passport');
-
+//var cloudinaryStorage =require('multer-storage-cloudinary')
 const { Error } = require('mongoose');
+const multer = require('multer');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const express = require('express');
 
 // Register
 router.post('/Register',  function(req,res,next){
@@ -32,11 +37,7 @@ return token.save()
 })
 .then(()=> {
 var transporter = nodemailer.createTransport({ service: 'gmail', auth: {user: 'hellohellio782@gmail.com', pass:"happytogether147"} });
-<<<<<<< HEAD
-var mailOptions = { from: 'hellohellio782@gmail.com', to: player.email, subject: 'Account Verification Token', text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + token.token + '.\n'  };
-=======
 var mailOptions = { from: 'hellohellio782@gmail.com', to: player.email, subject: 'Account Verification Token', text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/players\/confirmation\/' + token.token + '.\n'};
->>>>>>> 2e0d7cd15f9de27d0735f0332905942fb4e43be1
 // Send the email
  return transporter.sendMail(mailOptions)
 }) 
@@ -115,5 +116,33 @@ router.post('/Authentificate',  function(req,res,next){
 router.post('/profile',passport.authenticate('jwt', { session: false }),  (req, res, next) => {
   res.json({player: req.player});
 });
- 
+
+cloudinary.config({
+  cloud_name : 'dvl9yijld',
+  api_key : '482148614276127',
+  api_secret : 'U27mtAxCZ10oTWks0tb38gd_gzg'
+})
+
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+
+  allowedFormats: ["jpg", "png"],
+
+  filename: function (req, file, cb) {
+
+  cb(undefined, file.fieldname + "-" + Date.now());
+
+  },
+});
+
+const parser = multer({ storage: storage });
+
+router.post('/upload', parser.single('Imagefile'),  function(req, res, next) {
+  console.log(req.file);
+  const image = {};
+  image.url = req.file.url;
+  image.id = req.file.public_id;
+})
+;
 module.exports = router;
+ 
